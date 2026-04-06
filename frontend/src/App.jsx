@@ -53,10 +53,10 @@ const App = () => {
     {/* Messages */}
     <div className="flex-1 overflow-y-auto p-3 space-y-2">
       {loading ? (
-      <p><Loader /></p>
+      <Loader />
     ) : (
-      message.map((msg) => (
-        <div key={msg.id} className=" justify-start">
+      message.map((msg, index) => (
+        <div key={msg.id ?? index} className=" justify-start">
           <p>{msg.sender}</p>
           <div className="bg-gray-200 rounded-full px-4 py-2 w-fit max-w-[80%]">
             <p className="text-sm">{msg.text}</p>
