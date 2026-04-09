@@ -9,11 +9,11 @@ const App = () => {
   const [text, setText] = useState("");
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(true);
-  const BASE_URL = "http://localhost:6500";
+  const API_URL = import.meta.env.VITE_BASE_URL
 
   const fetchMessage = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/messages`);
+      const res = await axios.get(`${API_URL}/messages`);
       setMessage(res.data);
     } catch (err) {
       console.log("Error fetching API", err);
@@ -29,9 +29,9 @@ const App = () => {
   const handleSubmit = async () => {
     if (!text) return;
     try {
-      await axios.post(`${BASE_URL}/messages`, {
+      await axios.post(`${API_URL}/messages`, {
         text: text,
-        user: "Muhammad",
+        user: "You", //replaced this with my name for anyone who wants to test it
       });
       setText("");
       await fetchMessage();
