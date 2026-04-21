@@ -32,25 +32,57 @@ app.post('/messages',async (req, res) => {
 
 app.post('/register', async (req, res) => {
     const {email, password} = req.body
+    console.log(req.body)
 
     if(!email || !password) {
         return res.status(400).json({error: "Email and password required"})
     }
-    const hashedPassword = bcrypt.hash(password, 10)
+       const hashedPassword = await bcrypt.hash(password, 10)   
 
     try {
         const result = await pool.query("INSERT INTO users (email, password) VALUES($1, $2) RETURNING id, email",
             [email, hashedPassword]);
 
-            res.json(result.rows[0])
+            res.json({user:result.rows[0]})
     } catch (error) {
         console.error(error)
-        res.status(500).json({error: "Internal server error"})
+        res.status(400).json({error: "Internal server error"})
     }
 })
 
+app.post('/login', async (req, res) => { 
+    const {email, password} = req.body
+    console.log(req.body)
+   if(!email || !password) {
+    return res.status(400).json({error: "Email and password required"})
+   }
 
-const PORT = 6500
+   try {
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [email])
+
+    const user = result.rows[0]
+
+    if(!user) {
+        return res.status(400).json({error: "Invalid email"})
+        
+    }
+    const isMatch = await bcrypt.compare(password, user.password)
+
+     if(!isMatch) {
+        console.log(`is Match rendering ${isMatch}`);
+        return res.status(400).json({error: "Invalid password"})
+    } 
+    res.json({
+        message: "Logged in sucessfully",
+        id: user.id,
+        email: user.email
+    })
+   } catch (error) {
+    console.error(error)
+    res.status(500).json({error: "Internal Server error"})
+   }
+})  
+const PORT = 9876
 app.listen(PORT, () => {
     console.log(`Server is active on ${PORT}`)
 })
