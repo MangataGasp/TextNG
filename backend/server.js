@@ -72,6 +72,11 @@ app.post('/login', async (req, res) => {
         console.log(`is Match rendering ${isMatch}`);
         return res.status(400).json({error: "Invalid password"})
     } 
+
+    const token = jwt.sign({
+        id: user.id,
+        email: user.email
+    }, process.env.JWT_TOKEN, {expiresIn: "5d"})
     res.json({
         message: "Logged in sucessfully",
         id: user.id,
