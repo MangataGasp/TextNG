@@ -26,9 +26,8 @@ app.get('/messages',authMiddleware, async(req, res) => {
 
 
 app.post('/messages', authMiddleware, async(req, res) => {
-    const {text} = req.body
+    const {text, user} = req.body
     console.log(req.body);
-    const user = req.body.email
     
     const result = await pool.query("INSERT INTO textng (text, sender) VALUES($1, $2) RETURNING *", [text, user])
     res.json(result.rows[0])
