@@ -19,15 +19,17 @@ const pool = new Pool({
 })
 
 app.get('/messages',authMiddleware, async(req, res) => {
-    const result = await pool.query("SELECT * FROM textng ORDER By created_at ASCE")
+    const result = await pool.query("SELECT * FROM textng ORDER By created_at ASC")
     
     res.json (result.rows)
 })
 
 
 app.post('/messages', authMiddleware, async(req, res) => {
-    const {text, user} = req.body
-    /* todo: add email as senders name from the register */
+    const {text} = req.body
+    console.log(req.body);
+    const user = req.body.email
+    
     const result = await pool.query("INSERT INTO textng (text, sender) VALUES($1, $2) RETURNING *", [text, user])
     res.json(result.rows[0])
 })
