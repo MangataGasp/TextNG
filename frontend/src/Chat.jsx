@@ -16,9 +16,7 @@ const Chat = () => {
 
   const navigate = useNavigate()
 
-    const token = localStorage.getItem('token')
-  const fetchMessage = async () => {
-    
+  const fetchMessage = async () => { 
     try {
       const res = await axios.get(`${API_URL}/messages`, 
         {headers: { Authorization: `Bearer ${token}` }});
@@ -31,6 +29,9 @@ const Chat = () => {
       setLoading(false)
     }
   };
+  setInterval(() => {
+    fetchMessage()
+  }, 30000)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -56,6 +57,7 @@ const Chat = () => {
         user: "You" 
        //replaced this with my name for anyone who wants to test it
       },
+      setTimeout(handleSubmit, 30000),
       {headers: {Authorization: `Bearer ${localStorage.getItem('token')}`}});
       setText("");
       await fetchMessage();
@@ -72,8 +74,14 @@ const Chat = () => {
     
     {/* Header */}
     <div className="border-b flex justify-between px-4 py-3 font-semibold">
+      <div>
       <p>TEXTNG</p>
-      <button onClick={logout} className="cursor-pointer">Logout</button>
+      <p className="text-gray-500">{localStorage.getItem('email')}</p>
+      </div>
+  
+      <div>
+        <button onClick={logout} className="cursor-pointer px-5 py-2 bg-red-700 text-white rounded-lg ">Logout</button>
+      </div>
     </div>
   
     {/* Messages */}
